@@ -7,9 +7,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import java.util.ArrayList;
-
 public class MainActivity extends AppCompatActivity {
+    int MAX_PAGE = 3;
+
+    Fragment currentFragment = new Fragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,26 +18,40 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ViewPager viewPager = findViewById(R.id.view_pager);
+        viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         viewPager.setAdapter(new SawdFragmentAdatper(getSupportFragmentManager()));
 
     }
 
     class SawdFragmentAdatper extends FragmentPagerAdapter {
 
-        private ArrayList<Fragment> mFragment = new ArrayList<>();
         private SawdFragmentAdatper(FragmentManager fm) {
             super(fm);
-            for(int i=0; i<5; i++) {
-                mFragment.add(new SawdFragment());
-            }
         }
+
         @Override
         public Fragment getItem(int position) {
-            return mFragment.get(position);
+            if (position < 0 || MAX_PAGE <= position)
+                return null;
+
+            switch (position) {
+                case 0:
+                    currentFragment = new SawdFragment1();
+                    break;
+                case 1:
+                    currentFragment = new SawdFragment2();
+                    break;
+                case 2:
+                    currentFragment = new SawdFragment3();
+                    break;
+            }
+
+            return currentFragment;
         }
+
         @Override
         public int getCount() {
-            return mFragment.size();
+            return MAX_PAGE;
         }
     }
 }
